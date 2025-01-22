@@ -1,0 +1,85 @@
+/* DATA DESCRIPTION:
+Citation:	Ikeda, Tsutomu (2014): Respiration rate of marine plankton determined experimentally. PANGAEA, https://doi.org/10.1594/PANGAEA.833895
+Related to:	Ikeda, Tsutomu (1970): Relationship between respiration rate and body size in marine plankton animals as a function of temperature of habitat. Bulletin of Fisheries Sciences Hokkaido University, 21, 91-112, https://eprints.lib.hokudai.ac.jp/dspace/handle/2115/23417
+Event(s):	Plankton_RESEXP * METHOD/DEVICE: Net (NET) * COMMENT: respiration rate experiment using cultures from different sources
+Parameter(s):	Species (Species) * PI: Ikeda, Tsutomu (tom@pop.fish.hokudai.ac.jp)
+	Uniform resource locator/link to reference (URL ref) * PI: Ikeda, Tsutomu (tom@pop.fish.hokudai.ac.jp) * COMMENT: WoRMS Aphia ID
+	Treatment: temperature [°C] (Treat temp) * PI: Ikeda, Tsutomu (tom@pop.fish.hokudai.ac.jp)
+	Respiration rate, oxygen, per individual [µl/#/h] (Resp O2/ind) * PI: Ikeda, Tsutomu (tom@pop.fish.hokudai.ac.jp)
+License:	Creative Commons Attribution 3.0 Unported (CC-BY-3.0)
+Size:	280 data points
+*/
+Species	URL ref	Treat temp [°C]	Resp O2/ind [µl/#/h]
+Acartia sp.inicauda, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=534905	30.00	2.440
+Aega sp.	https://www.marinespecies.org/aphia.php?p=taxdetails&id=118394	17.00	12.160
+Brachyscelus latipes, female		29.00	4.640
+Brachyuran megalopa		17.00	1.614
+Brachyuran megalopa		28.00	8.110
+Brachyuran zoea		12.10	0.720
+Brachyuran zoea		6.80	0.179
+Brachyuran zoea		17.00	0.803
+Brachyuran zoea		28.00	4.220
+Brachyuran zoea		30.00	0.777
+Calanus cristatus V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=356624	12.10	1.010
+Calanus cristatus V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=356624	11.50	1.899
+Calanus cristatus V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=356624	7.80	1.960
+Calanus glacialis IV,V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104465	5.80	0.289
+Calanus glacialis IV,V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104465	5.80	0.277
+Calanus gracilis, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=356625	28.00	2.920
+Calanus pacificus, male	https://www.marinespecies.org/aphia.php?p=taxdetails&id=196771	17.00	0.441
+Calanus plumchrus V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=349536	10.10	0.740
+Calanus plumchrus V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=349536	6.70	0.600
+Calanus plumchrus V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=349536	10.10	0.657
+Calanus plumchrus V	https://www.marinespecies.org/aphia.php?p=taxdetails&id=349536	5.80	0.409
+Calanus vulgaris, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=220832	30.00	4.520
+Candacia aethiopica, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=357673	28.80	1.760
+Candacia columbia, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=349800	6.30	0.130
+Candacia columbia, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=349800	6.70	0.310
+Crangon affinis	https://www.marinespecies.org/aphia.php?p=taxdetails&id=246272	17.00	7.258
+Cypridina hilgendorfii		30.00	4.850
+Diastylis sp., female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110398	17.00	0.310
+Eucalanus bungii, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=196775	6.30	0.749
+Eucalanus bungii, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=196775	5.80	0.853
+Eucalanus crassus, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=149720	30.20	5.770
+Eucalanus monarchus, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=196776	30.20	6.290
+Eucalanus mucronatus, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=196777	30.00	0.695
+Euchaeta marina, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104552	28.00	2.690
+Euchaeta marina, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104552	28.80	2.240
+Euchaeta plana	https://www.marinespecies.org/aphia.php?p=taxdetails&id=346443	28.00	2.620
+Euchirella amoena, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104296	28.00	5.410
+Euphausia mutica, male	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110688	28.80	11.050
+Euphausia pacifica	https://www.marinespecies.org/aphia.php?p=taxdetails&id=237851	17.20	8.440
+Euthemisto libellula, adult	https://www.marinespecies.org/aphia.php?p=taxdetails&id=385287	5.80	1.770
+Euthemisto libellula, adult	https://www.marinespecies.org/aphia.php?p=taxdetails&id=385287	6.70	2.620
+Hypererythrops sp.	https://www.marinespecies.org/aphia.php?p=taxdetails&id=119865	17.00	0.871
+Hyperia galba, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=103251	12.10	7.600
+Hyperia galba, male	https://www.marinespecies.org/aphia.php?p=taxdetails&id=103251	8.00	17.350
+Hyperia sp.	https://www.marinespecies.org/aphia.php?p=taxdetails&id=101796	6.70	1.370
+Hyperia sp., adult	https://www.marinespecies.org/aphia.php?p=taxdetails&id=101796	17.00	0.719
+Hyperia sp., juvenil	https://www.marinespecies.org/aphia.php?p=taxdetails&id=101796	17.00	0.300
+Iphinoe sp., female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110391	29.00	1.190
+Iphinoe sp., juvenil	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110391	30.00	0.346
+Labidocera acuta, adult	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104726	30.00	2.870
+Labidocera detruncata, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104730	28.00	1.160
+Labidocera sp., female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104208	30.00	2.680
+Leptochela gracilis, juvenil	https://www.marinespecies.org/aphia.php?p=taxdetails&id=514202	17.00	4.390
+Lucifer typus, adult	https://www.marinespecies.org/aphia.php?p=taxdetails&id=107122	17.00	0.526
+Lysmata sp.	https://www.marinespecies.org/aphia.php?p=taxdetails&id=106992	30.00	14.040
+Macruran mysis		28.00	2.930
+Macruran post mysis		30.20	12.490
+Macruran post mysis		29.00	11.230
+Orchomene sp.	https://www.marinespecies.org/aphia.php?p=taxdetails&id=101633	29.90	14.330
+Paraeuchaete japonica, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=359859	6.70	1.120
+Penaeus sp.	https://www.marinespecies.org/aphia.php?p=taxdetails&id=106822	12.10	22.920
+Phronima sp.	https://www.marinespecies.org/aphia.php?p=taxdetails&id=101804	28.80	38.420
+Pseudocalanus elongatus, adult	https://www.marinespecies.org/aphia.php?p=taxdetails&id=104515	11.20	0.046
+Pyrocypris sp.	https://www.marinespecies.org/aphia.php?p=taxdetails&id=206184	30.00	1.020
+Sapphirina gemma, male	https://www.marinespecies.org/aphia.php?p=taxdetails&id=129046	29.00	1.280
+Sapphirina gemma, male	https://www.marinespecies.org/aphia.php?p=taxdetails&id=129046	30.00	7.630
+Synopia ultramarina	https://www.marinespecies.org/aphia.php?p=taxdetails&id=211240	30.20	14.560
+Thysanoessa inermis, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110708	11.20	1.390
+Thysanoessa inermis, juvenil	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110708	11.50	3.323
+Thysanoessa raschii, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110711	6.75	20.990
+Thysanoessa raschii, female	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110711	6.80	19.890
+Thysanoessa raschii, male	https://www.marinespecies.org/aphia.php?p=taxdetails&id=110711	6.70	10.790
+Tortanus discaudatus, adult	https://www.marinespecies.org/aphia.php?p=taxdetails&id=157684	11.20	0.229
