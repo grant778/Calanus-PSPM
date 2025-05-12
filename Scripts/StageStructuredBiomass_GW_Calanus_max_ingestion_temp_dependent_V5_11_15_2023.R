@@ -121,7 +121,7 @@ EnvironmentState <- c(R = "GENERALODE")
 # given names, these names can be used conveniently in the functions below that define
 # the life history processes.
 
-DefaultParameters <- c(Delta =  1, #turnover rate is 1 divided by the per capita growth rate
+DefaultParameters <- c(Delta = 0.01, #turnover rate is 1 divided by the per capita growth rate
                        # Turnover is 1, #per day.  Range of between approximately .1 and 3 from Marañón et al. 2014.  They found no relationship between phytoplankton turnover rate and temperature  
                        Rmax = 2000, #Rmax is a density micrograms of carbon per liter.  This means all other densities including copepod densities are micrograms per liter. Approximately 2000 from Putland and Iverson 2007
                        
@@ -131,28 +131,27 @@ DefaultParameters <- c(Delta =  1, #turnover rate is 1 divided by the per capita
                        
                        Temp = 273.15,  #20 C is 293.15 K 
                        E_mu = .57,  #.57 eV (McCoy et al. 2008) 
-                       E_M = .55, #.55 (Maps et al. 2014)
-                       E_I = 0.46, #.46 for C. glacialis (Maps et al. 2012).  Ingestion Activation Energy, see if I can find another one for activity or attack rates
+                       E_M = .55, #55, #.55 (Maps et al. 2014)
+                       E_I = .46, #.46 for C. glacialis (Maps et al. 2012).  Ingestion Activation Energy, see if I can find another one for activity or attack rates
                        #Average of .6 Savage et al. 2004, as cited in (Crossier 1926; Raven and Geider 1988; Vetter 1995; Gillooly et al. 2001)
                        E_Delta = 0.5, #average activation energy of phytoplankton growth from Barton and Yvon-Durocher (2019) 
-                       #Im = 29.89, #when n = A_hat*R
-                       Im = 11.26, #fit from kiorbe et al 2018 formulation of ingestion with alpha = .75 when n = A_hat*Size^alpha*R
+                       #Im = 29.89,
+                       Im = 11.26, 
                        #mean of just calanus at 15 C is 22.48333.  Mean of all species at 15 C is 17.74286
                        #Im = 17.74286,
                        t0_Im = 285.65, #average of Saiz Calbet data restricted to 10-15 C
-                         
+                       
                        #286.803, #mean temp of saiz and calbet dataframe when restricted to experiments between 10 and 15 degrees C
                        cI = 0, #Jan assumes a value of 0 in Roach model 
                        cM = 0.0,# Jan tests the Roach model with values of -.02, 0, and .02 
                        Lambda1 = 2, #(Petersen, 1986)
                        Lamda2 = 3.94, #(Petersen, 1986)
                        k = 8.617e-5, #boltzmann constant
-                       alpha = 0.75 , #guess
+                       alpha = 0.75, #guess
                        t0 = 285.65, #Frost experiment on attack rate conducted at 12.5 C or 285.65 K
-                       sigma = 0.7 , # .6 (Kiørboe, 2008.) Converts ingested energy to biomass
-                       #assimilation efficiencies between .685 and .854 Landry et al. 1984
-                       #sigma = 0.7 (de Roos et al. 2007; Peters 1983; Yodzis and Innes 1992)
-                       Mopt = 100, #???????????
+                       sigma = 0.7 , #0.6 (Kiørboe, 2008.) Converts ingested energy to biomass
+                       #0.66 works well
+                       Mopt = 96, #exp(-3.18)*exp(.73*12), #???????????
                        
                        gamma1 = exp(-3.211e-06), #from Saiz and Calbet max ingestion data at 15 C
                        gamma2 = 9.683e-03,
@@ -163,7 +162,7 @@ DefaultParameters <- c(Delta =  1, #turnover rate is 1 divided by the per capita
                        theta2 = 0.2492352,
                        theta3 = 0.8211947,
                        t0_theta = 286.953, #mean of Saiz and Calbet ingestion data when restricted to specimens at between 10 and 15 C
-                         
+                       
                        epsi1 = exp(0.83445), #Approximated from saiz and calbert 2007.  micrograms of carbon per day.  On marine calanoid species. 15 C.
                        epsi2 = 0.70310 , #Approximated from saiz and calbert 2007.  micrograms of carbon per day.  On marine calanoid species.  15 C.
                        t0_epsi = 288.15,
@@ -173,7 +172,7 @@ DefaultParameters <- c(Delta =  1, #turnover rate is 1 divided by the per capita
                        epsilon3 = 0.88576,
                        epsilon4 = 0.01603,
                        t0_epsilon = 288.15,
-                   
+                       
                        omega1 = 3.6577,
                        omega2 = 0.3307,
                        t0_omega = 286.953, #mean of Saiz and Calbet ingestion data when restricted to specimens at between 10 and 15 C
@@ -185,7 +184,7 @@ DefaultParameters <- c(Delta =  1, #turnover rate is 1 divided by the per capita
                        rho1 = exp(2.45033), #micro grams per day, from Ikeda_2007.  Dry weight at 2 C
                        rho2 = 0.75816, #micro grams per day, from Ikeda_2007.  Dry weight at 2 C
                        t0_rho = 275.15,
-                        
+                       
                        mh = .75, # .75 ug (micrograms) (Petersen, 1986) -graph pg 68
                        mj = exp(-3.18)*exp(.73*12),   # ug (micrograms) (Petersen, 1986) pg 66
                        
@@ -193,9 +192,8 @@ DefaultParameters <- c(Delta =  1, #turnover rate is 1 divided by the per capita
                        #Turnover_Time = 2.19907e-7 #converted from ms to days from Falkowski et al 1981
                        
                        #z = 0.002694034 #juvenile to adult ratio 
-                       )
-                        #12.0 and 7.1 were percent of carbon found in dry weight from phytoplankton sample according to Curl Jr.
-#
+)
+
 # Function name: StateAtBirth  (required)
 #
 # Specify for all structured populations in the problem all possible values of the individual state
@@ -420,7 +418,7 @@ LifeHistoryRates <- function(lifestage, istate, birthstate, BirthStateNr, E, par
       
       development = switch(lifestage, c(1.0, (netproduction)), c(1.0, 0.0)),
       
-      fecundity   = switch(lifestage, 0, (netproduction)/mh),
+      fecundity   = switch(lifestage, 0, (netproduction)/mh), #Number of eggs produced per unit time
       
       mortality   = switch(lifestage, mortality_rate, mortality_rate),  #Added temperature dependence to allometric exponent (Jan's paper doesn't include this)
       

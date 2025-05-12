@@ -2,6 +2,10 @@ library(PSPManalysis)
 library(tidyverse)
 library(ggplot2)
 library(ggpubr)
+library(here)
+
+root <- here()
+
 mj = exp(-3.18)*exp(.73*12)
 
 # 0.02
@@ -87,7 +91,7 @@ DefaultParameters <- c(Delta =  0.01, #turnover rate is 1 divided by the per cap
 
 library(lubridate)
 
-Bering_Calanus_Data = read.csv("Data/Calanus_BSMS.csv")
+Bering_Calanus_Data = read.csv(paste0(root,"/Data/Calanus_BSMS.csv"))
 
 all_Adults = Bering_Calanus_Data[which(Bering_Calanus_Data[,"STAGE_NAME"] == "ADULT"), c(12,42)]
 all_Juvenile = Bering_Calanus_Data[which(Bering_Calanus_Data[,"STAGE_NAME"] != "ADULT"), c(12,42)]
@@ -97,17 +101,18 @@ rep("Juvenile",nrow(all_Juvenile)))
 all_calanus = data.frame(all_calanus)
 
 month = format(as.Date(all_calanus$GMT_DATE_TIME_TXT),"%m")
-all_calanus_summary = all_calanus %>%
+
+all_calanus_samples_within_month = all_calanus %>%
   mutate(Month = month, .after = GMT_DATE_TIME_TXT) %>%
   group_by(Month) %>%
   summarize(count = n())
 
-ggplot(all_calanus_summary) +
+p1 <- ggplot(all_calanus_samples_within_month) +
   geom_point(aes(y = count, x = Month)) + 
   labs(y ="Number of Samples") + 
   theme_classic()
 
-ggplot(all_calanus) +
+p2 <- ggplot(all_calanus) +
   facet_wrap(~Stage) + 
   geom_point(aes(y = (mean_DW_mg_m3), x = month)) + 
   labs(y ="Density (µg/L)", x = "Month") + 
@@ -308,7 +313,6 @@ output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = "Scripts/S
                                                           clean = TRUE, force = FALSE, debug = FALSE, silent = FALSE)
  
 
- Temp_A_hat = Temp_A_hat_.096
 
  R_A_hat = output1_1_non_trivial_varying_temperature_.096$curvepoints[,2]
  J_A_hat = output1_1_non_trivial_varying_temperature_.096$curvepoints[,5]
@@ -331,4 +335,4 @@ ggplot(extinction_temp_df)+
 geom_line(aes(x = Extinction_Temp, y = mj)) +
   labs(x = "Extinction Temperature °C", y = "Size at Maturity µg") + 
   theme_classic()
-   
+
