@@ -130,10 +130,12 @@ p1
 p2 <- ggplot(all_calanus) +
   facet_wrap(~Stage, nrow = 2) + 
   geom_boxplot(aes(y = log(mean_DW_mg_m3), x = Month, group = Month)) + 
-  labs(y =expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")), x = "Month") + 
+  labs(y =expression(paste("Ln(Density) (mg / ", m^{3} ,")")), x = "Month") + 
   #labs(x = "Month", y = NULL) +
-  theme_classic()+
-  theme(text = element_text(size = 14))
+  theme_classic() +
+  theme(text = element_text(size = 14),
+        plot.margin = margin(0.2,0.5,0.2,1, "cm")) +
+  scale_y_continuous(position = "right")
 
 p2
 
@@ -148,9 +150,9 @@ all_calanus_spring_summer_juveniles <- all_calanus_spring_summer %>%
 p3_adult <- ggplot(all_calanus_spring_summer_adults) + 
   facet_grid(~Season) + 
   geom_boxplot(aes(y = log(mean_DW_mg_m3), x = fake_date, group = YEAR)) + 
-  #labs(y = expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")), x = "Year", title = "Adult Density") + 
+  #labs(y = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), x = "Year", title = "Adult Density") + 
   #labs(x = NULL, y = NULL) +
-  labs(y = expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")), x = NULL, title = "Adult Density") + 
+  labs(y = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), x = NULL, title = "Adult Density") + 
   scale_x_date(date_labels = "%Y", ) +
   theme_classic()+
   theme(text = element_text(size = 14))+
@@ -161,9 +163,9 @@ p3_adult
 p3_juvenile <- ggplot(all_calanus_spring_summer_juveniles) + 
   facet_grid(~Season) + 
   geom_boxplot(aes(y = log(mean_DW_mg_m3), x = fake_date, group = YEAR)) + 
-  #labs(y = expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")), x = "Year", title = "Juvenile Density") + 
+  #labs(y = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), x = "Year", title = "Juvenile Density") + 
   #labs(x = NULL, y = NULL) +
-  labs(y = expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")), x = NULL, title = "Juvenile Density") + 
+  labs(y = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), x = NULL, title = "Juvenile Density") + 
   scale_x_date(date_labels = "%Y", ) +
   theme_classic()+
   theme(text = element_text(size = 14))+
@@ -175,13 +177,14 @@ p3_juvenile
 p3_all_stages <- ggplot(all_calanus_spring_summer) + 
   facet_grid(Stage~Season) + 
   geom_boxplot(aes(y = log(mean_DW_mg_m3), x = fake_date, group = YEAR)) + 
-  #labs(y = expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")), x = "Year", title = "Juvenile Density") + 
+  #labs(y = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), x = "Year", title = "Juvenile Density") + 
   #labs(x = NULL, y = NULL) +
-  labs(y = expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")), x = NULL) + 
+  labs(y = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), x = NULL) + 
   scale_x_date(date_labels = "%Y", ) +
   theme_classic()+
-  theme(text = element_text(size = 14))+
-  theme(plot.margin = margin(0.2,1,0.2,1, "cm"), plot.title = element_text(hjust = 0.5))
+  theme(text = element_text(size = 14),
+        )+
+  theme(plot.margin = margin(0.2,0,0.2,0.5, "cm"), plot.title = element_text(hjust = 0.5))
 
 p3_all_stages
 
@@ -196,8 +199,8 @@ p3_all_stages
 p2_boxplot <- ggplot(all_calanus) +
   facet_wrap(~Stage) + 
   geom_boxplot(aes(y = log(mean_DW_mg_m3), x = Month)) + 
-  #labs(y = expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")), x = "Month") + 
-  labs(x = "Month", y = expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")"))) +
+  #labs(y = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), x = "Month") + 
+  labs(x = "Month", y = expression(paste("Ln(Density) (mg / ", m^{3} ,")"))) +
   theme_classic()+
   theme(text = element_text(size = 14))
 
@@ -217,7 +220,7 @@ for (i in seq_along(plots)) {
 }
 
 Figure_1_alt <- plot_grid(plotlist = grobs, ncol = 1)
-Figure_1_alt <- annotate_figure(Figure_1_alt,   left = text_grob(expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")),rot = 90, vjust = 1))
+Figure_1_alt <- annotate_figure(Figure_1_alt,   left = text_grob(expression(paste("Ln(Density) (mg / ", m^{3} ,")")),rot = 90, vjust = 1))
 Figure_1_alt
 
 Figure_1 <- ggarrange(p3_adult + labs(y = NULL),p3_juvenile+labs(y = NULL), nrow = 2, labels = c("A","B"))
@@ -225,7 +228,7 @@ Figure_1 <- ggarrange(p3_adult + labs(y = NULL),p3_juvenile+labs(y = NULL), nrow
 Figure_1
 
 Figure_1 <- annotate_figure(Figure_1,
-                left = text_grob(expression(paste("Ln(Biomass Density) (mg / ", m^{3} ,")")),rot = 90, vjust = 1), bottom = text_grob("Year") )
+                left = text_grob(expression(paste("Ln(Density) (mg / ", m^{3} ,")")),rot = 90, vjust = 1), bottom = text_grob("Year") )
 Figure_1
 
 spring_Calanus = Bering_Calanus_Data[which(Bering_Calanus_Data[,"MONTH"] >=3 & Bering_Calanus_Data[,"MONTH"] < 6),]
@@ -356,9 +359,11 @@ temp_graph <- ggplot(data = Temp_DF_2_graph, aes(x = fake_date, y = Temperature)
   geom_line(size = .75)+
   scale_x_date(date_labels = "%Y", limits = c(as.Date("1993-01-01"), as.Date("2018-01-01"))) +
   theme_classic()+
-  theme(text = element_text(size = 14)) +
+  theme(text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 11)),
+        strip.background = element_blank(), strip.text.x = element_blank()) +
   labs(y = "Temperature (°C)", x = "Year") +
-  theme(plot.margin = margin(0.2,1,0.2,1, "cm"), plot.title = element_text(hjust = 0.5))
+  theme(plot.margin = margin(0.2,0,0.2,0.5, "cm"), plot.title = element_text(hjust = 0.5))
 
 temp_graph
 
@@ -378,14 +383,21 @@ for (i in seq_along(plots)) {
 }
 # Draw aligned plots
 
-temp_combined_with_biomass_graphs <- plot_grid(plotlist = grobs, ncol = 1, labels = c("A","B","C"), rel_heights = c(7,3))
-temp_combined_with_biomass_graphs <- annotate_figure(temp_combined_with_biomass_graphs,
-                                                  bottom = text_grob("Year") )
-
-
+temp_combined_with_biomass_graphs <- plot_grid(plotlist = grobs, ncol = 1, labels = c("A","B"), rel_heights = c(7,3))
 temp_combined_with_biomass_graphs
 
-ggsave(paste0(root,"/figures/temp_combined_with_biomass_graphs.png"), plot = temp_combined_with_biomass_graphs, dpi = 300, height = 8, width = 8, units = "in")
+monthly_biomass_graph <- plot_grid(p2, ncol = 1, labels = c("C"))
+monthly_biomass_graph 
+
+#temp_combined_with_biomass_graphs <- plot_grid(plotlist = grobs, ncol = 1, labels = c("A","B"), rel_heights = c(7,3))
+
+temp_combined_with_yearly_and_monthly_biomass_graphs <- plot_grid(temp_combined_with_biomass_graphs, 
+                                                                  monthly_biomass_graph,
+                                                                  ncol = 2, labels = NULL, rel_widths = c(5,2))
+
+temp_combined_with_yearly_and_monthly_biomass_graphs
+
+ggsave(paste0(root,"/figures/temp_combined_with_biomass_graphs.png"), plot = temp_combined_with_yearly_and_monthly_biomass_graphs, dpi = 300, height = 8, width = 9, units = "in")
 
 Modified_Parameters_A_hat_.096 = DefaultParameters
 
@@ -870,7 +882,7 @@ DF_Summer_Observed_Predicted[,5] = as.factor(DF_Summer_Observed_Predicted[,5])
 
 ggplot(data =   DF3, aes(x = Year, y = (value), linetype = Stage))+
   facet_wrap(~name)+
-  labs(y= "Biomass Density (µg/L)") +
+  labs(y= "Density (µg/L)") +
   geom_line(size = 0.75)+
   theme_classic()+
   theme(text = element_text(size = 14))
@@ -887,7 +899,7 @@ ggplot(data =  DF_Summer_Observed_Predicted, aes(x = Year, y = (value), color = 
   )+
   geom_line()+
   guides(color=guide_legend(title = "Data Type"))+
-  labs(x = "Temperature (C°)", y = expression(paste("Biomass Density (mg/", m^{3} ,")"))) 
+  labs(x = "Temperature (C°)", y = expression(paste("Density (mg/", m^{3} ,")"))) 
 
 observed_J <- DF_Summer_Observed_Predicted %>%
   filter(Stage == "J" & Data_Type == "Observed") %>%
@@ -928,7 +940,22 @@ ggplot(data = DF_Summer_Observed_Predicted, aes(x = (value), color = Data_Type, 
   # guides(color=guide_legend(title = "Data Type"))+
   geom_density(alpha=.2)+
   theme_classic()+
-  labs(x = expression(paste("Biomass Density (mg / ", m^{3} ,")")), y ="Density") +
+  labs(x = expression(paste("Density (mg / ", m^{3} ,")")), y ="Density") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        legend.title=element_blank(),
+        axis.text = element_text(size = 12),
+        text = element_text(size = 14))
+
+#Boxplot version of above figure
+
+ggplot(data = DF_Summer_Observed_Predicted, aes(x = (value), fill = Data_Type)) +
+  facet_wrap(~Stage, scale = "free", labeller = labeller_A_J) +
+  geom_boxplot(aes(x = Stage, y = value, fill = Data_Type)) +
+    scale_fill_manual(values = c("#999999", "lightgrey")) +
+  labs(x = expression(paste("Density (mg / ", m^{3} ,")")), y ="Density") +
+      theme_classic() + 
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
@@ -955,27 +982,38 @@ mj_df$mj = as.numeric(mj_df$mj)
 mj_adult_juvenile_ratio = data.frame(cbind(adult_biomass/juvenile_biomass, mj))
 colnames(mj_adult_juvenile_ratio) = c("Ratio","mj")
 dev.off()
-a = ggplot(data = mj_df, aes(y = Biomass, x = mj))  +
+
+a <- ggplot(data = mj_df, aes(y = Biomass, x = mj))  +
   facet_wrap(~Stage) +
   geom_line() +
   scale_x_continuous(limits = c(40,265.5))+
-  labs(x = NULL, y = expression(paste("Biomass Density (mg/", m^{3} ,")"))) +
-  theme_classic()
+  labs(x = NULL, y = expression(paste("Density (mg/", m^{3} ,")"))) +
+  theme_classic() +
+  theme(plot.margin = margin(0.2,0.2,0.2,0.75, "cm")) 
 
-b = ggplot(data = mj_adult_juvenile_ratio, aes( y = Ratio, x = mj))  +
+b <- ggplot(data = mj_adult_juvenile_ratio, aes( y = Ratio, x = mj))  +
   geom_line() +
   scale_x_continuous(limits = c(40,265.5))+
-  scale_y_continuous(limits = c(0,1)) + 
+  scale_y_continuous(limits = c(0.15,0.3)) + 
   labs(x = "Size at Maturity (µg)", y = "Adult to Juvenile Biomass Ratio") +
-  theme_classic()
+  theme_classic() +
+  theme(plot.margin = margin(0.2,0.2,0.2,0.75, "cm")) 
+ 
 
-
-size_at_maturity_vs_biomass_and_Stage_ratio_graph <- ggarrange(a,b, ncol = 1, labels = c("A", "B"))
+size_at_maturity_vs_biomass_and_Stage_ratio_graph <- ggarrange(a,b, ncol = 1, labels = c("B", "C"))
 size_at_maturity_vs_biomass_and_Stage_ratio_graph
 
-ggsave(paste0(root,"/figures/size_at_maturity_vs_biomass_and_Stage_ratio_graph.png"), plot = size_at_maturity_vs_biomass_and_Stage_ratio_graph, dpi = 300, height = 7, width = 7, units = "in")
+#ggsave(paste0(root,"/figures/size_at_maturity_vs_biomass_and_Stage_ratio_graph.png"), plot = size_at_maturity_vs_biomass_and_Stage_ratio_graph, dpi = 300, height = 7, width = 7, units = "in")
 
 
 max(mj_adult_juvenile_ratio$Ratio[1:56],na.rm = TRUE)
 min(mj_adult_juvenile_ratio$Ratio)
 
+
+#source(paste0(root,"Scripts/Model_implementation_2_vary_mj_clean.R"))
+
+stage_ratio_biomass_extinction_temp <- plot_grid(extinction_vs_size, size_at_maturity_vs_biomass_and_Stage_ratio_graph, ncol = 2, rel_widths = c(4,5))
+
+stage_ratio_biomass_extinction_temp
+
+ggsave(paste0(root,"/figures/size_at_maturity_vs_biomass_Stage_ratio_and_extinction_graph.png"), plot = stage_ratio_biomass_extinction_temp, dpi = 300, height = 5, width = 7, units = "in")

@@ -331,8 +331,10 @@ output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = "Scripts/S
 
 extinction_temp_df = data.frame(cbind(c(extinction_temp-273.15),mj_sequence))
 colnames(extinction_temp_df) = c("Extinction_Temp", "mj")
-ggplot(extinction_temp_df)+
-geom_line(aes(x = Extinction_Temp, y = mj)) +
+
+extinction_vs_size <- ggplot(extinction_temp_df)+
+  geom_line(aes(x = Extinction_Temp, y = mj)) +
   labs(x = "Extinction Temperature °C", y = "Size at Maturity µg") + 
   theme_classic()
 
+extinction_vs_size <- plot_grid(extinction_vs_size, labels = "A")

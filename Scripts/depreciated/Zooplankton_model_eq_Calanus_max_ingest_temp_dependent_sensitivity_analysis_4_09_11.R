@@ -402,8 +402,8 @@ output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = "Scripts/S
    
   df3_J = df3[which(df3[,"name"] == "J"),]
   df3_A = df3[which(df3[,"name"] == "A"),]
-  DF3_J = DF3[which(DF3[,"Stage"] == "Juvenile" & DF3[,"name"] == "Spring"),]
-  DF3_A = DF3[which(DF3[,"Stage"] == "Adult" & DF3[,"name"] == "Spring"),]
+  DF3_J = DF3[which(DF3[,"Stage"] == "Juvenile" & DF3[,"name"] == "Summer"),]
+  DF3_A = DF3[which(DF3[,"Stage"] == "Adult" & DF3[,"name"] == "Summer"),]
   
   rows_to_extract_J = c()
   rows_to_extract_A = c()
@@ -434,32 +434,32 @@ for(i in 1:nrow(DF3_J))
   colnames(Year_to_temp_DF) = c("Year", "Stage", "value", "Temperature")
   Year_to_temp_DF[,"Data_Type"] = rep("Predicted",nrow(Year_to_temp_DF))
 
-  DF3_Spring = DF3[which(DF3[,"name"] == "Spring"),]
-  DF3_Spring[,2] = as.character(DF3_Spring[,2])
+  DF3_Summer = DF3[which(DF3[,"name"] == "Summer"),]
+  DF3_Summer[,2] = as.character(DF3_Summer[,2])
   
-  DF3_Spring = DF3_Spring[,c(1,2,4,5)]
+  DF3_Summer = DF3_Summer[,c(1,2,4,5)]
   
-for(i in 1:nrow(DF3_Spring))
+for(i in 1:nrow(DF3_Summer))
   {
-    if(DF3_Spring[i,"Stage"] == "Juvenile")
+    if(DF3_Summer[i,"Stage"] == "Juvenile")
       
     {
-      DF3_Spring[i,"Stage"] = "J"
+      DF3_Summer[i,"Stage"] = "J"
     }
     
-    if(DF3_Spring[i,"Stage"] == "Adult")
+    if(DF3_Summer[i,"Stage"] == "Adult")
       
     {
-      DF3_Spring[i,"Stage"] = "A"
+      DF3_Summer[i,"Stage"] = "A"
     }
     
   }
   
-  DF3_Spring[,"Data_Type"] = rep("Observed", nrow(DF3_Spring))
+  DF3_Summer[,"Data_Type"] = rep("Observed", nrow(DF3_Summer))
   
-  DF_Spring_Observed_Predicted = rbind(DF3_Spring,Year_to_temp_DF)
-  DF_Spring_Observed_Predicted[,2] = as.factor(DF_Summer_Observed_Predicted[,2])
-  DF_Spring_Observed_Predicted[,5] = as.factor(DF_Summer_Observed_Predicted[,5])
+  DF_Summer_Observed_Predicted = rbind(DF3_Summer,Year_to_temp_DF)
+  DF_Summer_Observed_Predicted[,2] = as.factor(DF_Summer_Observed_Predicted[,2])
+  DF_Summer_Observed_Predicted[,5] = as.factor(DF_Summer_Observed_Predicted[,5])
   
   
   ggplot(data =   DF3, aes(x = Year, y = (value), linetype = Stage))+
@@ -467,7 +467,7 @@ for(i in 1:nrow(DF3_Spring))
     geom_line()+
     geom_line()
 
-  ggplot(data =  DF_Spring_Observed_Predicted, aes(x = Year, y = (value), color = Data_Type, linetype = Stage))+
+  ggplot(data =  DF_Summer_Observed_Predicted, aes(x = Year, y = (value), color = Data_Type, linetype = Stage))+
     #facet_wrap(~name)+
     geom_line()+
     geom_line()
