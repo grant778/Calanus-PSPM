@@ -16,7 +16,7 @@ mj = exp(-3.18)*exp(.73*12)
 # 0.7
 # 5055.09
 
-DefaultParameters <- c(Delta =  0.01, #turnover rate is 1 divided by the per capita growth rate
+DefaultParameters <- c(Delta = 0.002, #turnover rate is 1 divided by the per capita growth rate
                        # Turnover is 1, #per day.  Range of between approximately .1 and 3 from Marañón et al. 2014.  They found no relationship between phytoplankton turnover rate and temperature  
                        Rmax = 2000, #Rmax is a density micrograms of carbon per liter.  This means all other densities including copepod densities are micrograms per liter. Approximately 2000 from Putland and Iverson 2007
                        
@@ -31,7 +31,7 @@ DefaultParameters <- c(Delta =  0.01, #turnover rate is 1 divided by the per cap
                        #Average of .6 Savage et al. 2004, as cited in (Crossier 1926; Raven and Geider 1988; Vetter 1995; Gillooly et al. 2001)
                        E_Delta = 0.5, #average activation energy of phytoplankton growth from Barton and Yvon-Durocher (2019) 
                        #Im = 29.89,
-                       Im = 11.26, 
+                       Im = 11.26, #Im ended up not being used in the final ingestion formulation, but left here to prevent breaking numeric indices
                        #mean of just calanus at 15 C is 22.48333.  Mean of all species at 15 C is 17.74286
                        #Im = 17.74286,
                        t0_Im = 285.65, #average of Saiz Calbet data restricted to 10-15 C
@@ -46,7 +46,7 @@ DefaultParameters <- c(Delta =  0.01, #turnover rate is 1 divided by the per cap
                        t0 = 285.65, #Frost experiment on attack rate conducted at 12.5 C or 285.65 K
                        sigma = 0.7 , #0.6 (Kiørboe, 2008.) Converts ingested energy to biomass
                        #0.66 works well
-                       Mopt = 96, #exp(-3.18)*exp(.73*12), #???????????
+                       Mopt = 79, #exp(-3.18)*exp(.73*12), #???????????
                        
                        gamma1 = exp(-3.211e-06), #from Saiz and Calbet max ingestion data at 15 C
                        gamma2 = 9.683e-03,
@@ -81,7 +81,7 @@ DefaultParameters <- c(Delta =  0.01, #turnover rate is 1 divided by the per cap
                        t0_rho = 275.15,
                        
                        mh = .75, # .75 ug (micrograms) (Petersen, 1986) -graph pg 68
-                       mj = mj,   # ug (micrograms) (Petersen, 1986) pg 66
+                       mj = exp(-3.18)*exp(.73*12),   # ug (micrograms) (Petersen, 1986) pg 66
                        
                        t0_Delta = 281.15 #8 degrees celsius from Maranon et al. at an intermediate nutrient level had turnover rate of about 1 day
                        #Turnover_Time = 2.19907e-7 #converted from ms to days from Falkowski et al 1981

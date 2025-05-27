@@ -9,13 +9,13 @@ library(here)
 root <- here()
 
 
-EQ_Function = function(Rmax,Mopt)
+EQ_Function = function(Delta, Mopt)
   
 {
   
-  DefaultParameters <- c(Delta = .1, #turnover rate is 1 divided by the per capita growth rate
+  DefaultParameters <- c(Delta = Delta, #turnover rate is 1 divided by the per capita growth rate
                          # Turnover is 1, #per day.  Range of between approximately .1 and 3 from Marañón et al. 2014.  They found no relationship between phytoplankton turnover rate and temperature  
-                         Rmax = Rmax, #Rmax is a density micrograms of carbon per liter.  This means all other densities including copepod densities are micrograms per liter. Approximately 2000 from Putland and Iverson 2007
+                         Rmax = 2000, #Rmax is a density micrograms of carbon per liter.  This means all other densities including copepod densities are micrograms per liter. Approximately 2000 from Putland and Iverson 2007
                          
                          A_hat = 0.096, #0.096 liters per day filtering rate AKA volume swept clear via frost 1972. Units should be liters per day.
                          # Neocalanus plumchrus is close in size to C. marshallae at 567 µg.  Dagg and Wyman (1983) found a range of clearance rates between .0336 1.3344 L/day
@@ -27,15 +27,15 @@ EQ_Function = function(Rmax,Mopt)
                          E_I = .46, #.46 for C. glacialis (Maps et al. 2012).  Ingestion Activation Energy, see if I can find another one for activity or attack rates
                          #Average of .6 Savage et al. 2004, as cited in (Crossier 1926; Raven and Geider 1988; Vetter 1995; Gillooly et al. 2001)
                          E_Delta = 0.5, #average activation energy of phytoplankton growth from Barton and Yvon-Durocher (2019) 
-                         #Im = 29.89,
-                         Im = 11.26, 
+                        
+                         Im = 11.26, #Im ended up not being used in the final ingestion formulation, but left here to prevent breaking numeric indices
                          #mean of just calanus at 15 C is 22.48333.  Mean of all species at 15 C is 17.74286
-                         #Im = 17.74286,
+                       
                          t0_Im = 285.65, #average of Saiz Calbet data restricted to 10-15 C
                          
                          #286.803, #mean temp of saiz and calbet dataframe when restricted to experiments between 10 and 15 degrees C
-                         cI = 0, #Jan assumes a value of 0 in Roach model 
-                         cM = 0.0,# Jan tests the Roach model with values of -.02, 0, and .02 
+                         cI = 0, #Ohlberger assumes a value of 0 in Roach model 
+                         cM = 0.0,# Ohlberger tests the Roach model with values of -.02, 0, and .02 
                          Lambda1 = 2, #(Petersen, 1986)
                          Lamda2 = 3.94, #(Petersen, 1986)
                          k = 8.617e-5, #boltzmann constant
@@ -43,7 +43,7 @@ EQ_Function = function(Rmax,Mopt)
                          t0 = 285.65, #Frost experiment on attack rate conducted at 12.5 C or 285.65 K
                          sigma = 0.7 , #0.6 (Kiørboe, 2008.) Converts ingested energy to biomass
                          #0.66 works well
-                         Mopt = Mopt, #exp(-3.18)*exp(.73*12), #???????????
+                         Mopt = Mopt, #exp(-3.18)*exp(.73*12), 
                          
                          gamma1 = exp(-3.211e-06), #from Saiz and Calbet max ingestion data at 15 C
                          gamma2 = 9.683e-03,
@@ -178,7 +178,7 @@ start_.096 = round(start_.096, 0)
 output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = paste0(root,"/Scripts/StageStructuredBiomass_GW_Calanus_max_ingestion_temp_dependent_V5_11_15_2023.R"), 
                                                           biftype = "EQ", startpoint = c(273.15, output1_1_non_trivial_.096$curvepoints[start_.096,2], 
                                                                                          output1_1_non_trivial_.096$curvepoints[start_.096,3]), 
-                                                          stepsize = 0.5,
+                                                          stepsize = 0.1,
                                                           parbnds = c(3, 273.15, 305), parameters = Modified_Parameters_A_hat_.096, minvals = NULL, maxvals = NULL, 
                                                           clean = TRUE, force = FALSE, debug = FALSE, silent = FALSE)
 
@@ -187,16 +187,33 @@ output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = paste0(roo
 Temp_A_hat_.096 = as.numeric(output1_1_non_trivial_varying_temperature_.096$curvepoints[,1])
 
 
-Temp_A_hat =Temp_A_hat_.096
+Temp_A_hat = Temp_A_hat_.096
 
-R_A_hat = output1_1_non_trivial_varying_temperature_.096$curvepoints[,2]
-J_A_hat = output1_1_non_trivial_varying_temperature_.096$curvepoints[,5]
-A_A_hat = output1_1_non_trivial_varying_temperature_.096$curvepoints[,6]
-print(A_A_hat/J_A_hat)
+R_Biomass = output1_1_non_trivial_varying_temperature_.096$curvepoints[,2]
+J_Biomass = output1_1_non_trivial_varying_temperature_.096$curvepoints[,5]
+A_Biomass = output1_1_non_trivial_varying_temperature_.096$curvepoints[,6]
+
+#Negative biomass is biologically impossible, but the PSPM package stops after the first negative value (so it may include a negative value as the last value)
+#Manually replace the negative values with 0
+
+for(i in 1:length(J_Biomass))
+{
+if(J_Biomass[i] < 0 )
+{
+  J_Biomass[i] = 0
+}
+  if(A_Biomass[i] < 0 )
+  {
+    A_Biomass[i] = 0
+  }
+  
+}
+
+
 df3 <- data.frame(Temperature = Temp_A_hat,
-                  R = R_A_hat,
-                  J = J_A_hat,
-                  A = A_A_hat
+                  R = R_Biomass,
+                  J = J_Biomass,
+                  A = A_Biomass
 ) %>% 
   pivot_longer(c(R, J, A))
 
@@ -282,25 +299,22 @@ DF_Observed = DF_Observed_Predicted[which(DF_Observed_Predicted[,"name"] =="Obse
 return(DF_Observed_Predicted)
   
 }
- 
-Rmax_Vector =  seq(800,1500,100) 
-Mopt_Vector = seq(80,120,5)
 
-Parameter_combo_diff_A <- array(dim = c(length(Rmax_Vector), length(Mopt_Vector)))
-Parameter_combo_diff_J <- array(dim = c(length(Rmax_Vector), length(Mopt_Vector)))
+Delta_Vector = seq(0.001,.004,.001) #rows
+Mopt_Vector = seq(73,100,1) #columns
+  
+Parameter_combo_diff_A <- array(dim = c(length(Delta_Vector), length(Mopt_Vector)))
+Parameter_combo_diff_J <- array(dim = c(length(Delta_Vector), length(Mopt_Vector)))
 
-n = length(Rmax_Vector)*length(Mopt_Vector)
 
-Pred_J = data.frame()
-Obs_J =  data.frame()
-Pred_A =  data.frame()
-Obs_A = data.frame()
+n = length(Delta_Vector)*length(Mopt_Vector)
+
 
 step = 0 
 
 output = c()
 
-for(i in 1:length(Rmax_Vector))
+for(i in 1:length(Delta_Vector))
 {
       for(z in 1:length(Mopt_Vector))
         
@@ -310,37 +324,38 @@ for(i in 1:length(Rmax_Vector))
 step = step + 1 
 print(step)
   
-  output = EQ_Function(Rmax_Vector[i], Mopt_Vector[z])
+  output = EQ_Function(Delta = Delta_Vector[i], Mopt = Mopt_Vector[z])
+  
   
 
-  Obs_J = rbind(Obs_J, data.frame(cbind(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "J" ) ,],
-                                        rep(Rmax_Vector[i], nrow(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "J" ) ,])),
+  Obs_J = rbind(data.frame(cbind(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "J" ) ,],
+                                        rep(Delta_Vector[i], nrow(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "J" ) ,])),
                                         rep(Mopt_Vector[z], nrow(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "J" ) ,]))
   )))
   
-  Obs_A = rbind(Obs_A, data.frame(cbind(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "A" ) ,],
-                                        rep(Rmax_Vector[i], nrow(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "A" ) ,])),
+  Obs_A = rbind(data.frame(cbind(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "A" ) ,],
+                                        rep(Delta_Vector[i], nrow(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "A" ) ,])),
                                         rep(Mopt_Vector[z], nrow(output[which(output[,"name"] == "Observed" & output[,"Stage"] == "A" ) ,]))
   )))
            
        
-  Pred_J = rbind(Pred_J, data.frame(cbind(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "J" ) ,],
-                                        rep(Rmax_Vector[i], nrow(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "J" ) ,])),
+  Pred_J = rbind(data.frame(cbind(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "J" ) ,],
+                                        rep(Delta_Vector[i], nrow(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "J" ) ,])),
                                         rep(Mopt_Vector[z], nrow(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "J" ) ,]))
   )))
   
-  Pred_A = rbind(Pred_A, data.frame(cbind(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "A" ) ,],
-                                        rep(Rmax_Vector[i], nrow(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "A" ) ,])),
+  Pred_A = rbind(data.frame(cbind(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "A" ) ,],
+                                        rep(Delta_Vector[i], nrow(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "A" ) ,])),
                                         rep(Mopt_Vector[z], nrow(output[which(output[,"name"] == "Predicted" & output[,"Stage"] == "A" ) ,]))
   )))
 
   #Calculate sum of squared residuals
-  #Diff_A = sum((Obs_A[,"value"]-Pred_A[,"value"])^2)
-  #Diff_J = sum((Obs_J[,"value"]-Pred_J[,"value"])^2)
+  Diff_A = sum((log(Obs_A[,"value"]+.000000000001) - log(Pred_A[,"value"]+.000000000001))^2)
+  Diff_J = sum((log(Obs_J[,"value"]+.000000000001) - log(Pred_J[,"value"]+.000000000001))^2)
   
   #Calculate MAPE
-  Diff_A = mean(abs(Obs_A[,"value"]-Pred_A[,"value"])/Obs_A[,"value"], na.rm = TRUE)
-  Diff_J = mean(abs(Obs_J[,"value"]-Pred_J[,"value"])/Obs_J[,"value"], na.rm = TRUE)
+  #Diff_A = mean(abs(Obs_A[,"value"]-Pred_A[,"value"])/Obs_A[,"value"], na.rm = TRUE)
+  #Diff_J = mean(abs(Obs_J[,"value"]-Pred_J[,"value"])/Obs_J[,"value"], na.rm = TRUE)
   
 
   Parameter_combo_diff_A[i,z] <- Diff_A
@@ -349,13 +364,18 @@ print(step)
         }
     }
 
-parameter_combo_mean_diff <- (Parameter_combo_diff_A + Parameter_combo_diff_J)/2
+parameter_combo_mean_diff <- Parameter_combo_diff_A + Parameter_combo_diff_J
+
+rownames(parameter_combo_mean_diff) = Delta_Vector
+colnames(parameter_combo_mean_diff) = Mopt_Vector
 
 min(parameter_combo_mean_diff)
 
 apply(parameter_combo_mean_diff, 1, min)# row minimums
-Rmax_Vector[which(apply(parameter_combo_mean_diff, 1, min) == min(apply(parameter_combo_mean_diff, 1, min)))]
+Delta_Vector[which(apply(parameter_combo_mean_diff, 1, min) == min(apply(parameter_combo_mean_diff, 1, min)))]
 
 apply(parameter_combo_mean_diff, 2, min)# column minimums
 Mopt_Vector[which(apply(parameter_combo_mean_diff, 2, min) == min(apply(parameter_combo_mean_diff, 2, min)))]
 
+plot(parameter_combo_mean_diff[2,]~Mopt_Vector)
+plot(parameter_combo_mean_diff[,7]~Delta_Vector)

@@ -1,0 +1,13 @@
+
+Locating new solution point
+
+** curve.c      (217): Norm overflow in FindPoint
+
+Locating new solution point failed
+
+
+** PSPMequi.c   (979): Norm overflow in Newton iteration            
+
+
+** PSPMequi.c   (983): No convergence while locating first point of curve
+

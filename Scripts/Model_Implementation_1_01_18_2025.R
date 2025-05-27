@@ -7,7 +7,7 @@ library(here)
 
 root <- here()
 
-DefaultParameters <- c(Delta = 0.01, #turnover rate is 1 divided by the per capita growth rate
+DefaultParameters <- c(Delta = 0.002, #turnover rate is 1 divided by the per capita growth rate
                        # Turnover is 1, #per day.  Range of between approximately .1 and 3 from Marañón et al. 2014.  They found no relationship between phytoplankton turnover rate and temperature  
                        Rmax = 2000, #Rmax is a density micrograms of carbon per liter.  This means all other densities including copepod densities are micrograms per liter. Approximately 2000 from Putland and Iverson 2007
                        
@@ -22,7 +22,7 @@ DefaultParameters <- c(Delta = 0.01, #turnover rate is 1 divided by the per capi
                        #Average of .6 Savage et al. 2004, as cited in (Crossier 1926; Raven and Geider 1988; Vetter 1995; Gillooly et al. 2001)
                        E_Delta = 0.5, #average activation energy of phytoplankton growth from Barton and Yvon-Durocher (2019) 
                        #Im = 29.89,
-                       Im = 11.26, 
+                       Im = 11.26, #Im ended up not being used in the final ingestion formulation, but left here to prevent breaking numeric indices
                        #mean of just calanus at 15 C is 22.48333.  Mean of all species at 15 C is 17.74286
                        #Im = 17.74286,
                        t0_Im = 285.65, #average of Saiz Calbet data restricted to 10-15 C
@@ -37,7 +37,7 @@ DefaultParameters <- c(Delta = 0.01, #turnover rate is 1 divided by the per capi
                        t0 = 285.65, #Frost experiment on attack rate conducted at 12.5 C or 285.65 K
                        sigma = 0.7 , #0.6 (Kiørboe, 2008.) Converts ingested energy to biomass
                        #0.66 works well
-                       Mopt = 96, #exp(-3.18)*exp(.73*12), #???????????
+                       Mopt = 79, #exp(-3.18)*exp(.73*12), #???????????
                        
                        gamma1 = exp(-3.211e-06), #from Saiz and Calbet max ingestion data at 15 C
                        gamma2 = 9.683e-03,
@@ -476,16 +476,12 @@ output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = paste0(roo
                                                           parbnds = c(3, 273.15, 310), parameters = Modified_Parameters_A_hat_.096, minvals = NULL, maxvals = NULL, 
                                                           clean = TRUE, force = FALSE, debug = FALSE, silent = FALSE)
 
-
-
 output1_1_non_trivial_varying_mj_.096 <-PSPMequi(modelname = paste0(root,"/Scripts/StageStructuredBiomass_GW_Calanus_max_ingestion_temp_dependent_V5_11_15_2023.R"), 
                                                  biftype = "EQ", startpoint = c(265.0716, output1_1_non_trivial_varying_temperature_.096$bifpoints[2], output1_1_non_trivial_varying_temperature_.096$bifpoints[3] 
                                                  ), 
                                                  stepsize = -.5,
                                                  parbnds = c(45, 0, 265.0716), parameters = Modified_Parameters_A_hat_.096, minvals = NULL, maxvals = NULL, 
                                                  clean = TRUE, force = FALSE, debug = FALSE, silent = FALSE)
-
-
 
 Total_Population_A_Hat = output1_1_non_trivial_varying_temperature_.096$curvepoints[, 5]+output1_1_non_trivial_varying_temperature_.096$curvepoints[, 6]
 
@@ -934,13 +930,13 @@ plot(A_pred_obs$Observed ~ A_pred_obs$Predicted)
 
 
 
-ggplot(data = DF_Summer_Observed_Predicted, aes(x = (value), color = Data_Type, fill = Data_Type)) +
+ggplot(data = DF_Summer_Observed_Predicted, aes(x = log(value), color = Data_Type, fill = Data_Type)) +
   facet_wrap(~Stage, scale = "free", labeller = labeller_A_J)+
   #geom_histogram(aes(y=..density.., color = Data_Type), fill="white")+
   # guides(color=guide_legend(title = "Data Type"))+
   geom_density(alpha=.2)+
   theme_classic()+
-  labs(x = expression(paste("Density (mg / ", m^{3} ,")")), y ="Density") +
+  labs(x = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), y ="Density") +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
@@ -950,11 +946,11 @@ ggplot(data = DF_Summer_Observed_Predicted, aes(x = (value), color = Data_Type, 
 
 #Boxplot version of above figure
 
-ggplot(data = DF_Summer_Observed_Predicted, aes(x = (value), fill = Data_Type)) +
+ggplot(data = DF_Summer_Observed_Predicted) +
   facet_wrap(~Stage, scale = "free", labeller = labeller_A_J) +
-  geom_boxplot(aes(x = Stage, y = value, fill = Data_Type)) +
+  geom_boxplot(aes(x = Stage, y = log(value), fill = Data_Type)) +
     scale_fill_manual(values = c("#999999", "lightgrey")) +
-  labs(x = expression(paste("Density (mg / ", m^{3} ,")")), y ="Density") +
+  labs(x = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), y ="Density") +
       theme_classic() + 
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),

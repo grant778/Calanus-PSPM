@@ -80,7 +80,8 @@ PSPMdimensions <- c(PopulationNr = 1, IStateDimension = 2, LifeHistoryStages = 2
 NumericalOptions <- c(MIN_SURVIVAL  = 1.0E-9,                                       # Survival at which individual is considered dead
                       MAX_AGE       = 100000,                                       # Give some absolute maximum for individual age
                       DYTOL         = 1.0E-6,                                       # Variable tolerance
-                      RHSTOL        = 1.0E-6)                                       # Function tolerance
+                      RHSTOL        = 1.0E-6,
+                      ALLOWNEGATIVE = 0)                                       # Function tolerance
 
 #Default Allow negative is set to 0 (false) in numerical options so not listed here
 # Variable name: EnvironmentState (required)
@@ -121,7 +122,7 @@ EnvironmentState <- c(R = "GENERALODE")
 # given names, these names can be used conveniently in the functions below that define
 # the life history processes.
 
-DefaultParameters <- c(Delta = 0.01, #turnover rate is 1 divided by the per capita growth rate
+DefaultParameters <- c(Delta = 0.002, #turnover rate is 1 divided by the per capita growth rate
                        # Turnover is 1, #per day.  Range of between approximately .1 and 3 from Marañón et al. 2014.  They found no relationship between phytoplankton turnover rate and temperature  
                        Rmax = 2000, #Rmax is a density micrograms of carbon per liter.  This means all other densities including copepod densities are micrograms per liter. Approximately 2000 from Putland and Iverson 2007
                        
@@ -136,7 +137,7 @@ DefaultParameters <- c(Delta = 0.01, #turnover rate is 1 divided by the per capi
                        #Average of .6 Savage et al. 2004, as cited in (Crossier 1926; Raven and Geider 1988; Vetter 1995; Gillooly et al. 2001)
                        E_Delta = 0.5, #average activation energy of phytoplankton growth from Barton and Yvon-Durocher (2019) 
                        #Im = 29.89,
-                       Im = 11.26, 
+                       Im = 11.26, #Im ended up not being used in the final ingestion formulation, but left here to prevent breaking numeric indices
                        #mean of just calanus at 15 C is 22.48333.  Mean of all species at 15 C is 17.74286
                        #Im = 17.74286,
                        t0_Im = 285.65, #average of Saiz Calbet data restricted to 10-15 C
@@ -151,7 +152,7 @@ DefaultParameters <- c(Delta = 0.01, #turnover rate is 1 divided by the per capi
                        t0 = 285.65, #Frost experiment on attack rate conducted at 12.5 C or 285.65 K
                        sigma = 0.7 , #0.6 (Kiørboe, 2008.) Converts ingested energy to biomass
                        #0.66 works well
-                       Mopt = 96, #exp(-3.18)*exp(.73*12), #???????????
+                       Mopt = 79, #exp(-3.18)*exp(.73*12), #???????????
                        
                        gamma1 = exp(-3.211e-06), #from Saiz and Calbet max ingestion data at 15 C
                        gamma2 = 9.683e-03,
@@ -354,46 +355,17 @@ LifeStageEndings <- function(lifestage, istate, birthstate, BirthStateNr, E, par
 LifeHistoryRates <- function(lifestage, istate, birthstate, BirthStateNr, E, pars) {
   with(as.list(c(E, pars, istate)),{
     n = exp(E_I*(Temp-t0)/((k)*Temp*t0))*(A_hat*((Size/Mopt)*exp(1-Size/Mopt))^(alpha+cI*(Temp-t0)))*R 
-    #n = exp(E_I*(Temp-t0)/((k)*Temp*t0))*(A_hat*(Size)^(alpha+cI*(Temp-t0)))*R 
-    #n = exp(E_I*(Temp-t0)/((k)*Temp*t0))*A_hat*R 
-    #Imax = exp(E_I*(Temp-t0_gamma)/((k)*Temp*t0_gamma))*gamma1*Size^(gamma2+cI*(Temp-t0_gamma))*R^(gamma3+cI*(Temp-t0_gamma)) #saiz and calbet 2007
-    #Imax = epsi1*Size^(epsi2) #based on dry weight for zooplankton and grams of Carbon for phytoplankton
-    
-    #Imax = Im #placeholder for impact function
-    #in units of micro grams of carbon per day
-    #Ingest = epsilon1*Size^(epsilon2)*R^(epsilon3)*exp(epsilon4*Temp)
-    #Ingest = exp(E_I*(Temp-t0_theta)/((k)*Temp*t0_theta))*theta1*Size^(theta2+cI*(Temp-t0_theta))*R^(theta3+cI*(Temp-t0_theta))
-    #Imax = exp(E_I*(Temp-t0_Im)/((k)*Temp*t0_Im))*Im
-    #Imax = exp(E_I*(Temp-t0_omega)/((k)*Temp*t0_omega))*omega1*Size^(omega2+cI*(Temp-t0_omega))
-    #Imax = omega1*Size^(omega2)
-    #Imax = epsi1*Size^(epsi2)
     
     Imax = exp(E_I*(Temp-t0_epsi)/((k)*Temp*t0_epsi))*epsi1*Size^(epsi2+cI*(Temp-t0_epsi))
-    #Imax = Im
-    #a temp dependent max ingestion rate does not allow this model to work
-    #Ingest = n/(1+(n/Imax)) 
     
     Ingest = Imax*((n)/(n+Imax)) #Formula from Kiorbe et al 2018
     
     Metabolic_rate = exp(E_M*(Temp-t0_rho)/((k)*Temp*t0_rho))*rho1*Size^(rho2 + cM*(Temp-t0_rho)) #parameters estimated from dry weight.  Units of micrograms of O2 per day
-    
-    # cat("Ingestion")
-    # print(Ingest)
-    # cat("Metabolism")
-    # print(Metabolic_rate)
-    
-    
+
     netproduction = (sigma*((Ingest))/.455 - Metabolic_rate*.014196*(.0279)) #need to convert ingestion parameter from micrograms of carbon to micrograms of dry weight of zooplankton with conversion factor of .455 (Uye 1982)
-    #Tau = 4.327/(netproduction - 0.025)
-    #mj = mh*exp(netproduction*Tau)
+
     mortality_rate = exp(E_mu*(Temp-t0_phi)/((k)*Temp*t0_phi))*phi1*Size^(phi2 + cI*(Temp-t0_phi)) 
     
-    
-    # cat("net production")
-    # print(netproduction)
-    # 
-    
-   
     #carbon is 12% dry weight (Curl Jr)
     #21 J/mg dry mass for Daphnia (Richman 1958, Cummins and Wuycheck 1971) as cited in the bluegill optimal foraging paper at Kellogg biological station
     #Calanus propinquus (21.3 kJ g−1 DW) and Calanoides acutus (17.6 kJ g−1 DW) Donnelly et al 1994 as cited in Schaafsma et al 2018
@@ -410,8 +382,6 @@ LifeHistoryRates <- function(lifestage, istate, birthstate, BirthStateNr, E, par
     #1 calorie is 4.2 joules
     #1 mg O2 = 14.196 J so 1 ug of O2 = .014196 J (Elliot and Davison 1975)
     #3.38 Calories per mg O2 (Elliot and Davison 1975)
-    
-
     
     
     list(
