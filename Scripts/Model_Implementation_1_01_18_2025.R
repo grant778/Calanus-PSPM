@@ -7,7 +7,7 @@ library(here)
 
 root <- here()
 
-DefaultParameters <- c(Delta = 0.002, #turnover rate is 1 divided by the per capita growth rate
+DefaultParameters <- c(Delta = 0.0014, #turnover rate is 1 divided by the per capita growth rate
                        # Turnover is 1, #per day.  Range of between approximately .1 and 3 from Marañón et al. 2014.  They found no relationship between phytoplankton turnover rate and temperature  
                        Rmax = 2000, #Rmax is a density micrograms of carbon per liter.  This means all other densities including copepod densities are micrograms per liter. Approximately 2000 from Putland and Iverson 2007
                        
@@ -37,7 +37,7 @@ DefaultParameters <- c(Delta = 0.002, #turnover rate is 1 divided by the per cap
                        t0 = 285.65, #Frost experiment on attack rate conducted at 12.5 C or 285.65 K
                        sigma = 0.7 , #0.6 (Kiørboe, 2008.) Converts ingested energy to biomass
                        #0.66 works well
-                       Mopt = 79, #exp(-3.18)*exp(.73*12), #???????????
+                       Mopt = 87, #exp(-3.18)*exp(.73*12), #???????????
                        
                        gamma1 = exp(-3.211e-06), #from Saiz and Calbet max ingestion data at 15 C
                        gamma2 = 9.683e-03,
@@ -946,18 +946,22 @@ ggplot(data = DF_Summer_Observed_Predicted, aes(x = log(value), color = Data_Typ
 
 #Boxplot version of above figure
 
-ggplot(data = DF_Summer_Observed_Predicted) +
-  facet_wrap(~Stage, scale = "free", labeller = labeller_A_J) +
-  geom_boxplot(aes(x = Stage, y = log(value), fill = Data_Type)) +
+obs_vs_pred_biomass <- ggplot(data = DF_Summer_Observed_Predicted) +
+   geom_boxplot(aes(x = Stage, y = log(value), fill = Data_Type)) +
     scale_fill_manual(values = c("#999999", "lightgrey")) +
-  labs(x = expression(paste("Ln(Density) (mg / ", m^{3} ,")")), y ="Density") +
+  labs(y = expression(paste("Ln(Density) (mg / ", m^{3} ,")"))) +
       theme_classic() + 
+  scale_x_discrete(labels = c("Adult", "Juvenile")) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         legend.title=element_blank(),
         axis.text = element_text(size = 12),
         text = element_text(size = 14))
+
+
+ggsave(paste0(root,"/figures/obs_vs_pred_biomass.png"), plot = obs_vs_pred_biomass, dpi = 300, height = 5, width = 5, units = "in")
+
 
 mj = output1_1_non_trivial_varying_mj_.096$curvepoints[,1]
 mj = round(mj, 2)
