@@ -2,6 +2,7 @@ library(PSPManalysis)
 library(tidyverse)
 library(ggplot2)
 library(ggpubr)
+library(cowplot)
 library(here)
 
 root <- here()
@@ -231,7 +232,9 @@ Modified_Parameters_A_hat_.096 = DefaultParameters
 
 
 modified_parameters_2 = Modified_Parameters_A_hat_.096
-mj_sequence = seq(75.0716,265.0716,20)
+
+mj_sequence = seq(75.0716,265.0716,10)
+
 extinction_temp = c()
 change_in_size_ratio = c()
 
@@ -241,7 +244,7 @@ for(a in 1:length(mj_sequence))
   
 modified_parameters_2[46] =  mj_sequence[a]
 
-output1_1_A_hat_.096 <-PSPMequi(modelname = "Scripts/StageStructuredBiomass_GW_Calanus_max_ingestion_temp_dependent_V5_11_15_2023.R", biftype = "EQ", startpoint = c(1, 1), 
+output1_1_A_hat_.096 <-PSPMequi(modelname = "Scripts/PSPM_Model_Structure.R", biftype = "EQ", startpoint = c(1, 1), 
                      stepsize = 1.5,
                      parbnds = c(1, 1, 10000), parameters = modified_parameters_2, minvals = NULL, maxvals = NULL, options = c(c("popZE", "0")),
                      clean = TRUE, force = FALSE, debug = FALSE, silent = FALSE)
@@ -253,7 +256,7 @@ df = data.frame(R_max = output1_1_A_hat_.096$curvepoints[, 1],
                  A = output1_1_A_hat_.096$curvepoints[, 6],
                 A_Hat = as.factor(rep(.096, nrow(output1_1_A_hat_.096$curvepoints))) )
 
-output1_1_non_trivial_.096 <-PSPMequi(modelname = "Scripts/StageStructuredBiomass_GW_Calanus_max_ingestion_temp_dependent_V5_11_15_2023.R", 
+output1_1_non_trivial_.096 <-PSPMequi(modelname = "Scripts/PSPM_Model_Structure.R", 
                                       biftype = "EQ", startpoint = c(output1_1_A_hat_.096$bifpoints[1], output1_1_A_hat_.096$bifpoints[2], 0), 
                                       stepsize = 1.5, parbnds = c(1, output1_1_A_hat_.096$bifpoints[1], 10000), parameters = modified_parameters_2, 
                                       minvals = NULL, maxvals = NULL, clean = TRUE, force = FALSE, debug = FALSE, silent = FALSE)
@@ -305,7 +308,7 @@ ggplot(df2, aes(R_max, value, color = name)) +
   geom_line()+ 
   theme_light()
 
-output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = "Scripts/StageStructuredBiomass_GW_Calanus_max_ingestion_temp_dependent_V5_11_15_2023.R", 
+output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = "Scripts/PSPM_Model_Structure.R", 
                                                           biftype = "EQ", startpoint = c(273.15, output1_1_non_trivial_.096$curvepoints[start_.096,2], 
                                                           output1_1_non_trivial_.096$curvepoints[start_.096,3]), 
                                                           stepsize = .1,
@@ -335,6 +338,9 @@ colnames(extinction_temp_df) = c("Extinction_Temp", "mj")
 extinction_vs_size <- ggplot(extinction_temp_df)+
   geom_line(aes(x = Extinction_Temp, y = mj)) +
   labs(x = "Extinction Temperature °C", y = "Size at Maturity µg") + 
-  theme_classic()
+  theme_classic() +
+  theme(axis.text = element_text(size = 12),
+         axis.title = element_text(size = 13))
 
 extinction_vs_size <- plot_grid(extinction_vs_size, labels = "A")
+

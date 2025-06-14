@@ -147,7 +147,7 @@ EQ_Function = function(Delta, Mopt)
   
 Modified_Parameters_A_hat_.096 = DefaultParameters
   
-output1_1_A_hat_.096 <-PSPMequi(modelname = paste0(root,"/Scripts/StageStructuredBiomass_GW_Calanus_max_ingestion_temp_dependent_V5_11_15_2023.R"), biftype = "EQ", startpoint = c(1, 1), 
+output1_1_A_hat_.096 <-PSPMequi(modelname = paste0(root,"/Scripts/PSPM_Model_Structure.R"), biftype = "EQ", startpoint = c(1, 1), 
                                 stepsize = 1.5,
                                 parbnds = c(1, 1, 5000), parameters = Modified_Parameters_A_hat_.096, minvals = NULL, maxvals = NULL, options = c(c("popZE", "0")),
                                 clean = TRUE, force = FALSE, debug = FALSE, silent = FALSE)
@@ -159,7 +159,7 @@ df = data.frame(R_max = output1_1_A_hat_.096$curvepoints[, 1],
                 A = output1_1_A_hat_.096$curvepoints[, 6],
                 A_Hat = as.factor(rep(.096, nrow(output1_1_A_hat_.096$curvepoints))) )
 
-output1_1_non_trivial_.096 <-PSPMequi(modelname = paste0(root,"/Scripts/StageStructuredBiomass_GW_Calanus_max_ingestion_temp_dependent_V5_11_15_2023.R"), 
+output1_1_non_trivial_.096 <-PSPMequi(modelname = paste0(root,"/Scripts/PSPM_Model_Structure.R"), 
                                       biftype = "EQ", startpoint = c(output1_1_A_hat_.096$bifpoints[1], output1_1_A_hat_.096$bifpoints[2], 0), 
                                       stepsize = 1.25, parbnds = c(1, output1_1_A_hat_.096$bifpoints[1], 5000), parameters = Modified_Parameters_A_hat_.096, 
                                       minvals = NULL, maxvals = NULL, clean = TRUE, force = FALSE, debug = FALSE, silent = FALSE)
@@ -175,7 +175,7 @@ start_.096 = median(which(t1[,"Rmax"] < (Modified_Parameters_A_hat_.096[2]+500) 
 start_.096 = round(start_.096, 0)
 
 
-output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = paste0(root,"/Scripts/StageStructuredBiomass_GW_Calanus_max_ingestion_temp_dependent_V5_11_15_2023.R"), 
+output1_1_non_trivial_varying_temperature_.096 <-PSPMequi(modelname = paste0(root,"/Scripts/PSPM_Model_Structure.R"), 
                                                           biftype = "EQ", startpoint = c(273.15, output1_1_non_trivial_.096$curvepoints[start_.096,2], 
                                                                                          output1_1_non_trivial_.096$curvepoints[start_.096,3]), 
                                                           stepsize = 0.1,
